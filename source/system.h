@@ -15,6 +15,7 @@ extern void systemFlagForSave();
 extern void systemUnflagForSave();
 extern void system10Frames();
 extern int systemGetFrameSkip();
+extern void systemShowSpeed(int speed);
 
 extern void systemOnWriteDataToSoundBuffer(s16* finalWave, int length);
 
@@ -22,6 +23,7 @@ extern void* systemAlloc(u32 size);
 extern void systemFree(void* ptr);
 
 extern u32* systemGetPixels();
+extern u64 systemGetClock();
 extern u16 systemGetScreenWidth();
 extern u16 systemGetScreenHeight();
 extern u16 systemGetScreenDepth();
