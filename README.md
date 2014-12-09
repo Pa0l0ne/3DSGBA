@@ -22,3 +22,14 @@ Requires [devkitARM](http://sourceforge.net/projects/devkitpro/files/devkitARM/)
  * X - Saves a save state.
  * Y - Loads a save state.
  * TOUCH - Opens the file selector, pausing the emulation.
+ 
+ 
+<b>TODO</b>
+--------
+
+ * Optimizations
+   * Hardware rendering of tiles?
+   * etc?
+ * Multiple save-states
+   * Probably selected in the menu.
+ * Cheat support.
