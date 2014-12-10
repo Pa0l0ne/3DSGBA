@@ -19,7 +19,7 @@
 #endif
 
 /* if a >= 0 return x else y*/
-#define isel(a, x, y) ((x & (~(a >> 31))) + (y & (a >> 31)))
+#define isel(a, x, y) (((x) & (~((a) >> 31))) + ((y) & ((a) >> 31)))
 
 #ifdef _MSC_VER
 #include <stdlib.h>

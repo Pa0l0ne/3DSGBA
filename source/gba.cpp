@@ -2580,7 +2580,7 @@ static void armUnknownInsn(u32 opcode)
     }
 
 #define MODECHANGE_NO  /*nothing*/
-#define MODECHANGE_YES if(armMode != (bus.reg[17].I & 0x1f)) CPUSwitchMode(bus.reg[17].I & 0x1f, false, true);
+#define MODECHANGE_YES if(armMode != (int) (bus.reg[17].I & 0x1f)) { CPUSwitchMode(bus.reg[17].I & 0x1f, false, true); }
 
 #define DEFINE_ALU_INSN_C(CODE1, CODE2, OP, MODECHANGE) \
   static  void arm##CODE1##0(u32 opcode) { ALU_INSN(ALU_INIT_C, VALUE_LSL_IMM_C, OP_##OP, MODECHANGE_##MODECHANGE, 0); }\
@@ -2815,7 +2815,7 @@ static  void arm120(u32 opcode)
 	    if (opcode & 0x00080000)
 		    newValue = (newValue & 0x00FFFFFF) | (value & 0xFF000000);
 	    newValue |= 0x10;
-	    if(armMode != (newValue & 0x1F))
+	    if(armMode != (int) (newValue & 0x1F))
 		    CPUSwitchMode(newValue & 0x1F, false, true);
 	    bus.reg[16].I = newValue;
 	    CPUUpdateFlags(1);
@@ -2875,7 +2875,7 @@ static  void arm320(u32 opcode)
 
 		newValue |= 0x10;
 
-		if(armMode != (newValue & 0x1F))
+		if(armMode != (int) (newValue & 0x1F))
 			CPUSwitchMode(newValue & 0x1F, false, true);
 		bus.reg[16].I = newValue;
 		CPUUpdateFlags(1);
@@ -3571,7 +3571,7 @@ static  void arm7F6(u32 opcode) { LDR_PREINC_WB(OFFSET_ROR, OP_LDRB, 16); }
     }
 #define LDM_ALL_2B \
     if (opcode & (1U<<15)) {                            \
-	if(armMode != (bus.reg[17].I & 0x1F)) \
+	if(armMode != (int) (bus.reg[17].I & 0x1F)) \
 	    CPUSwitchMode(bus.reg[17].I & 0x1F, false, true);   \
         if (armState) {                                 \
             bus.armNextPC = bus.reg[15].I & 0xFFFFFFFC;         \
@@ -4321,7 +4321,7 @@ static int armExecute (void)
 
 		bus.busPrefetch = false;
 		int32_t busprefetch_mask = ((bus.busPrefetchCount & 0xFFFFFE00) | -(bus.busPrefetchCount & 0xFFFFFE00)) >> 31;
-		bus.busPrefetchCount = (0x100 | (bus.busPrefetchCount & 0xFF) & busprefetch_mask) | (bus.busPrefetchCount & ~busprefetch_mask);
+		bus.busPrefetchCount = (0x100 | ((bus.busPrefetchCount & 0xFF) & busprefetch_mask)) | (bus.busPrefetchCount & ~busprefetch_mask);
 #if 0
 		if (bus.busPrefetchCount & 0xFFFFFE00)
 			bus.busPrefetchCount = 0x100 | (bus.busPrefetchCount & 0xFF);
@@ -5116,7 +5116,7 @@ static  void thumb44_2(u32 opcode)
     bus.armNextPC = bus.reg[15].I;
     bus.reg[15].I += 2;
     THUMB_PREFETCH;
-    clockTicks = codeTicksAccessSeq16(bus.armNextPC)<<1
+    clockTicks = (codeTicksAccessSeq16(bus.armNextPC)<<1)
         + codeTicksAccess(bus.armNextPC, BITS_16) + 3;
   }
 }
@@ -5130,7 +5130,7 @@ static  void thumb44_3(u32 opcode)
     bus.armNextPC = bus.reg[15].I;
     bus.reg[15].I += 2;
     THUMB_PREFETCH;
-    clockTicks = codeTicksAccessSeq16(bus.armNextPC)<<1
+    clockTicks = (codeTicksAccessSeq16(bus.armNextPC)<<1)
         + codeTicksAccess(bus.armNextPC, BITS_16) + 3;
   }
 }
@@ -5174,7 +5174,7 @@ static  void thumb46_2(u32 opcode)
     bus.armNextPC = bus.reg[15].I;
     bus.reg[15].I += 2;
     THUMB_PREFETCH;
-    clockTicks = codeTicksAccessSeq16(bus.armNextPC)<<1
+    clockTicks = (codeTicksAccessSeq16(bus.armNextPC)<<1)
         + codeTicksAccess(bus.armNextPC, BITS_16) + 3;
   }
 }
@@ -5188,7 +5188,7 @@ static  void thumb46_3(u32 opcode)
     bus.armNextPC = bus.reg[15].I;
     bus.reg[15].I += 2;
     THUMB_PREFETCH;
-    clockTicks = codeTicksAccessSeq16(bus.armNextPC)<<1
+    clockTicks = (codeTicksAccessSeq16(bus.armNextPC)<<1)
         + codeTicksAccess(bus.armNextPC, BITS_16) + 3;
   }
 }
@@ -7235,7 +7235,7 @@ static INLINE void gfxDrawSprites (void)
 										line[Layer_OBJ][sx]=(line[Layer_OBJ][sx-1] & 0xF9FFFFFF) | prio;
 								}
 
-								if ((a0 & 0x1000) && ((m+1) == mosaicX))
+								if ((a0 & 0x1000) && ((m+1) == (unsigned) mosaicX))
 									m = 0;
 							}
 							sx = (sx+1)&511;
@@ -7282,7 +7282,7 @@ static INLINE void gfxDrawSprites (void)
 							}
 							if((a0 & 0x1000) && m)
 							{
-								if (++m==mosaicX)
+								if (++m==(unsigned) mosaicX)
 									m=0;
 							}
 
@@ -7360,7 +7360,7 @@ static INLINE void gfxDrawSprites (void)
 										line[Layer_OBJ][sx]=(line[Layer_OBJ][sx-1] & 0xF9FFFFFF) | prio;
 								}
 
-								if ((a0 & 0x1000) && ((m+1) == mosaicX))
+								if ((a0 & 0x1000) && ((m+1) == (unsigned) mosaicX))
 									m = 0;
 							}
 
@@ -7432,7 +7432,7 @@ static INLINE void gfxDrawSprites (void)
 									}
 								}
 
-								if ((a0 & 0x1000) && ((m+1) == mosaicX))
+								if ((a0 & 0x1000) && ((m+1) == (unsigned) mosaicX))
 									m=0;
 
 								sx = (sx+1) & 511;
@@ -7478,7 +7478,7 @@ static INLINE void gfxDrawSprites (void)
 
 									}
 								}
-								if ((a0 & 0x1000) && ((m+1) == mosaicX))
+								if ((a0 & 0x1000) && ((m+1) == (unsigned) mosaicX))
 									m=0;
 
 								sx = (sx+1) & 511;
@@ -8556,7 +8556,7 @@ void doMirroring (bool b)
 	}
 
 #define alpha_blend_brightness_switch()                                                    \
-	if(R_BLDCNT_IsTarget2(top2))                                                           \
+	if(R_BLDCNT_IsTarget2(top2)) {                                                          \
 		if(color < 0x80000000)                                                             \
 		{                                                                                  \
 			GFX_ALPHA_BLEND(color, back, coeff[COLEV & 0x1F], coeff[(COLEV >> 8) & 0x1F]); \
@@ -8565,7 +8565,8 @@ void doMirroring (bool b)
 		if (R_BLDCNT_IsTarget1(top))                                                       \
 		{                                                                                  \
 			brightness_switch();                                                           \
-		}
+		}                                                                                  \
+	}
 
 static void mode0RenderLine (void)
 {
@@ -11270,7 +11271,7 @@ void CPUUpdateRegister(uint32_t address, uint16_t value)
 		case 0x80:
 		case 0x84:
 			{
-				int gb_addr[2] = {address & 0xFF, (address & 0xFF) + 1};
+				int gb_addr[2] = {(int) (address & 0xFF), (int) (address & 0xFF) + 1};
 				uint32_t address_array[2] = {address & 0xFF, (address&0xFF)+1};
 				uint8_t data_array[2] = {(uint8_t)(value & 0xFF), (uint8_t)(value>>8)};
 				gb_addr[0] = table[gb_addr[0] - 0x60];

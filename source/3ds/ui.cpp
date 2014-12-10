@@ -158,9 +158,9 @@ void uiFill(u8* fb, u16 fbWidth, u16 fbHeight, int x, int y, int width, int heig
         return;
     }
 
-    int swidth = fbHeight;
-    int sheight = fbWidth;
-    if(x + width < 0 || y + height < 0 || x >= swidth || y >= sheight) {
+    u16 swidth = fbHeight;
+    u16 sheight = fbWidth;
+    if(x + width < 0 || y + height < 0 || (u32) x >= swidth || (u32) y >= sheight) {
         return;
     }
 
@@ -324,7 +324,7 @@ const char* uiDisplaySelector(std::vector<char*>* contents) {
                 color = 0;
                 u32 width = strlen(*it) * 8;
                 if(width > fbHeight) {
-                    if(-horizScroll + fbHeight >= width) {
+                    if(-horizScroll + fbHeight >= (int) width) {
                         if(horizEndTime == 0) {
                             horizEndTime = osGetTime();
                         } else if(osGetTime() - horizEndTime >= 4000) {

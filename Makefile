@@ -41,7 +41,7 @@ INCLUDES	:=	include
 #---------------------------------------------------------------------------------
 ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=softfp
 
-CFLAGS	:=	-g -Wall -O3 -mword-relocations \
+CFLAGS	:=	-g -Wall -Wno-strict-aliasing -Wno-unused-variable -Wno-unused-but-set-variable -O3 -mword-relocations \
 			-fomit-frame-pointer -ffast-math \
 			$(ARCH) -DTILED_RENDERING -DBRANCHLESS_GBA_GFX
 
